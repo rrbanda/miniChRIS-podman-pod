@@ -19,4 +19,4 @@ jobs:
         ls -lath .
         make create-volume-chris-db
         make run-chris-db-pod
-        podman pod ps
+        sudo podman pod ps || exit $?
