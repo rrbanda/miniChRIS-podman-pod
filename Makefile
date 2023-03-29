@@ -10,9 +10,13 @@ run-chris-db-pod:
 run-worker-pod:
 	sudo podman play kube dev-env/pods/worker-pod.yaml --configmap=dev-env/pods/secrets.yml
 
+.PHONY: run-chris-pod
+run-chris-pod:
+	sudo podman play kube dev-env/pods/chris-pod.yaml --configmap=dev-env/pods/secrets.yml
+
 .PHONY: reset-podman
 reset-podman:
 	sudo podman system reset
 
 .PHONY: all
-all: create-volume-chris-db run-chris-db-pod run-worker-pod
+all: create-volume-chris-db run-chris-db-pod run-worker-pod run-chris-pod

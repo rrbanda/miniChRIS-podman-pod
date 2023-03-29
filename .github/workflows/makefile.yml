@@ -19,11 +19,19 @@ jobs:
         make create-volume-chris-db
         make run-chris-db-pod
         sudo podman pod ps || exit $?
-        sudo podman pod stop chris_db_pod || exit $?
 
     - name: Test worker-pod
       run: |
         make run-worker-pod
         sudo podman pod ps || exit $?
-        sudo podman pod stop worker_pod || exit $?
 
+    - name: Test chris-pod
+      run: |
+        make run-chris-pod
+        sudo podman pod ps || exit $?
+
+    - name: Stop All Pods
+      run: |
+        sudo podman pod ps || exit $?
+        sudo podman pod stop --all
+        sudo podman pod rm --all
