@@ -21,3 +21,10 @@ jobs:
         make run-chris-db-pod
         sudo podman pod ps || exit $?
         sudo podman pod stop chris_db_pod || exit $?
+
+    - name: Test worker-pod
+      run: |
+        ls -lath .
+        make run-worker-pod
+        sudo podman pod ps || exit $?
+        sudo podman pod stop worker_pod || exit $?
