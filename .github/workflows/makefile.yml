@@ -30,6 +30,11 @@ jobs:
         make run-chris-pod
         sudo podman pod ps || exit $?
 
+    - name: Sleep for 60s
+      uses: juliangruber/sleep-action@v1
+      with:
+        time: 60s
+
     - name: Stop All Pods
       run: |
         sudo podman pod ps || exit $?
