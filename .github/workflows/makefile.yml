@@ -34,6 +34,12 @@ jobs:
       uses: juliangruber/sleep-action@v1
       with:
         time: 60s
+        
+    - name: Testing Enviornment
+      run: |
+        sudo podman ps --all --format "{{.Names}} {{.Ports}} {{.Mounts}} {{.Status}}"
+        sudo podman stats
+        sudo podman pod stats
 
     - name: Stop All Pods
       run: |
