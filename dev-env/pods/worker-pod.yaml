@@ -1,6 +1,7 @@
 apiVersion: v1
 kind: Pod
-  name: worker_pod
+metadata:
+  name: worker
 spec:
   containers:
     - args: ["celery", "-A", "core", "worker", "-c", "4", "-l", "info", "-Q", "main1,main2"]
