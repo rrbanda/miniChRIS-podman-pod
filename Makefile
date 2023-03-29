@@ -1,6 +1,6 @@
 .PHONY: create-volume
 create-volume-chris-db:
-	sudo podman volume create chris-db 
+	sudo podman volume create chris_db
 
 .PHONY: run-chris-db-pod
 run-chris-db-pod:

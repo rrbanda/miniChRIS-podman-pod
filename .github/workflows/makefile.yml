@@ -20,4 +20,4 @@ jobs:
         make create-volume-chris-db
         make run-chris-db-pod
         sudo podman pod ps || exit $?
-        sudo podman stop chris_db || exit $?
+        sudo podman stop chris_db_pod || exit $?
