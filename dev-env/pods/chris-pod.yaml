@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Pod
+metadata:
+  name: chris
+  spec:
+    containers:
+      - name: chris
+        envFrom:
+          - configMapRef:
+              name: secrets
+        image: ghcr.io/fnndsc/chris:4.0.0.pre6
+        ports:
+          - containerPort: 8000
+        resources: {}
+  restartPolicy: Always
+status: {}
