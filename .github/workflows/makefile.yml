@@ -1,4 +1,4 @@
-name: Makefile CI
+name: Podman Deploymet CI
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
 
     - name: Test run-chris-db-pod
       run: |
+        ls -lath .
         make create-volume-chris-db
         make run-chris-db-pod
         podman pod ps
-
