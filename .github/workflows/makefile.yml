@@ -37,9 +37,10 @@ jobs:
         
     - name: Testing Enviornment
       run: |
+        sudo podman ps 
         sudo podman ps --all --format "{{.Names}} {{.Ports}} {{.Mounts}} {{.Status}}"
-        sudo podman stats
-        sudo podman pod stats
+        sudo podman stats --no-stream
+        sudo podman pod stats --no-stream
 
     - name: Stop All Pods
       run: |
