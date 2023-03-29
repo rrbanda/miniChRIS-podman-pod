@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: pfdcm
+  name: pfdcm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: pfdcm
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.28.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/extract-local: "true"
+        io.kompose.network/extract-pacs: "true"
+        io.kompose.service: pfdcm
+    spec:
+      containers:
+        - image: ghcr.io/fnndsc/pfdcm:3.0.12
+          name: pfdcm
+          ports:
+            - containerPort: 4005
+          resources: {}
+          securityContext:
+            runAsUser: 10100
+          volumeMounts:
+            - mountPath: /home/dicom
+              name: pfdcm
+            - mountPath: /home/dicom/services
+              name: pfdcm-claim1
+              readOnly: true
+      restartPolicy: Always
+      volumes:
+        - name: pfdcm
+          persistentVolumeClaim:
+            claimName: pfdcm
+        - name: pfdcm-claim1
+          persistentVolumeClaim:
+            claimName: pfdcm-claim1
+            readOnly: true
+status: {}

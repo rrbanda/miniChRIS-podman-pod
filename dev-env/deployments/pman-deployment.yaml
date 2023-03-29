@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.28.0 (HEAD)
+    org.chrisproject.role: pman
+  creationTimestamp: null
+  labels:
+    io.kompose.service: pman
+  name: pman
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: pman
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.28.0 (HEAD)
+        org.chrisproject.role: pman
+      creationTimestamp: null
+      labels:
+        io.kompose.network/extract-remote: "true"
+        io.kompose.service: pman
+    spec:
+      containers:
+        - env:
+            - name: CONTAINER_ENV
+              value: docker
+            - name: CONTAINER_USER
+              value: '10100:'
+            - name: ENABLE_HOME_WORKAROUND
+              value: "yes"
+            - name: JOB_LABELS
+              value: org.chrisproject.miniChRIS=plugininstance
+            - name: SECRET_KEY
+              value: secret
+          image: ghcr.io/fnndsc/pman:5.0.0.a1
+          name: pman
+          ports:
+            - containerPort: 5010
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: pman-claim0
+      restartPolicy: Always
+      volumes:
+        - name: pman-claim0
+          persistentVolumeClaim:
+            claimName: pman-claim0
+status: {}

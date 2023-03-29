@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.28.0 (HEAD)
+    name: ChRIS_store MySQL Database
+  creationTimestamp: null
+  labels:
+    io.kompose.service: chris-store-db
+  name: chris-store-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: chris-store-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.28.0 (HEAD)
+        name: ChRIS_store MySQL Database
+      creationTimestamp: null
+      labels:
+        io.kompose.network/extract-local: "true"
+        io.kompose.service: chris-store-db
+    spec:
+      containers:
+        - env:
+            - name: POSTGRES_DB
+              value: chris_store
+            - name: POSTGRES_PASSWORD
+              value: chirs1234
+            - name: POSTGRES_USER
+              value: chris
+          image: docker.io/library/postgres:13
+          name: chris-store-db
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/postgresql
+              name: chris-store-db-data
+      restartPolicy: Always
+      volumes:
+        - name: chris-store-db-data
+          persistentVolumeClaim:
+            claimName: chris-store-db-data
+status: {}

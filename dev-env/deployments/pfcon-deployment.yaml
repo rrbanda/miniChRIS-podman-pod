@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.28.0 (HEAD)
+    org.chrisproject.role: pfcon
+  creationTimestamp: null
+  labels:
+    io.kompose.service: pfcon
+  name: pfcon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: pfcon
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.28.0 (HEAD)
+        org.chrisproject.role: pfcon
+      creationTimestamp: null
+      labels:
+        io.kompose.network/extract-local: "true"
+        io.kompose.network/extract-remote: "true"
+        io.kompose.service: pfcon
+    spec:
+      containers:
+        - env:
+            - name: COMPUTE_SERVICE_URL
+              value: http://pman:5010/api/v1/
+            - name: PFCON_PASSWORD
+              value: pfcon1234
+            - name: PFCON_USER
+              value: pfcon
+            - name: SECRET_KEY
+              value: secret
+          image: ghcr.io/fnndsc/pfcon:5.0.0
+          name: pfcon
+          ports:
+            - containerPort: 5005
+          resources: {}
+          securityContext:
+            runAsUser: 10100
+          volumeMounts:
+            - mountPath: /var/local/storeBase
+              name: remote
+      restartPolicy: Always
+      volumes:
+        - name: remote
+          persistentVolumeClaim:
+            claimName: remote
+status: {}

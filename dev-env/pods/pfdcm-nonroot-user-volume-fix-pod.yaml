@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.network/extract-default: "true"
+    io.kompose.service: pfdcm-nonroot-user-volume-fix
+  name: pfdcm-nonroot-user-volume-fix
+spec:
+  containers:
+    - args:
+        - chown
+        - "10100"
+        - /home/dicom
+      image: docker.io/library/alpine:latest
+      name: pfdcm-nonroot-user-volume-fix
+      resources: {}
+      volumeMounts:
+        - mountPath: /home/dicom
+          name: pfdcm
+  restartPolicy: Never
+  volumes:
+    - name: pfdcm
+      persistentVolumeClaim:
+        claimName: pfdcm
+status: {}

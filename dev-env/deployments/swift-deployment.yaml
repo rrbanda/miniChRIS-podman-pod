@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: swift
+  name: swift
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: swift
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.28.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/extract-local: "true"
+        io.kompose.service: swift
+    spec:
+      containers:
+        - env:
+            - name: SWIFT_KEY
+              value: testing
+            - name: SWIFT_USERNAME
+              value: chris:chris1234
+          image: docker.io/fnndsc/docker-swift-onlyone:latest
+          name: swift
+          ports:
+            - containerPort: 8080
+          resources: {}
+          volumeMounts:
+            - mountPath: /srv
+              name: swift-storage
+      restartPolicy: Always
+      volumes:
+        - name: swift-storage
+          persistentVolumeClaim:
+            claimName: swift-storage
+status: {}

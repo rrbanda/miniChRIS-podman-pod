@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: chrisomatic
+  name: chrisomatic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: chrisomatic
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.28.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/extract-local: "true"
+        io.kompose.service: chrisomatic
+    spec:
+      containers:
+        - image: ghcr.io/fnndsc/chrisomatic:0.4.1
+          name: chrisomatic
+          resources: {}
+          volumeMounts:
+            - mountPath: /chrisomatic.yml
+              name: chrisomatic-claim0
+              readOnly: true
+            - mountPath: /var/run/docker.sock
+              name: chrisomatic-claim1
+      restartPolicy: Always
+      volumes:
+        - name: chrisomatic-claim0
+          persistentVolumeClaim:
+            claimName: chrisomatic-claim0
+            readOnly: true
+        - name: chrisomatic-claim1
+          persistentVolumeClaim:
+            claimName: chrisomatic-claim1
+status: {}

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: chris-ui
+  name: chris-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: chris-ui
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.28.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/extract-default: "true"
+        io.kompose.service: chris-ui
+    spec:
+      containers:
+        - args:
+            - sirv
+            - --host
+            - --single
+          env:
+            - name: REACT_APP_CHRIS_UI_URL
+              value: http://localhost:8000/api/v1/
+            - name: REACT_APP_PFDCM_URL
+              value: http://localhost:4005/
+          image: ghcr.io/fnndsc/chris_ui:20230223.203-f0074403
+          name: chris-ui
+          ports:
+            - containerPort: 3000
+          resources: {}
+      restartPolicy: Always
+status: {}

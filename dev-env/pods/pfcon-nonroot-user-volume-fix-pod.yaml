@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.network/extract-default: "true"
+    io.kompose.service: pfcon-nonroot-user-volume-fix
+  name: pfcon-nonroot-user-volume-fix
+spec:
+  containers:
+    - args:
+        - chown
+        - "10100"
+        - /var/local/storeBase
+      image: docker.io/library/alpine:latest
+      name: pfcon-nonroot-user-volume-fix
+      resources: {}
+      volumeMounts:
+        - mountPath: /var/local/storeBase
+          name: remote
+  restartPolicy: Never
+  volumes:
+    - name: remote
+      persistentVolumeClaim:
+        claimName: remote
+status: {}

@@ -1,0 +1,137 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.network/extract-local: "true"
+    io.kompose.service: scheduler
+  name: scheduler
+spec:
+  containers:
+    - args:
+        - celery
+        - -A
+        - core
+        - beat
+        - -l
+        - info
+        - --scheduler
+        - django_celery_beat.schedulers:DatabaseScheduler
+      env:
+        - name: AUTH_LDAP
+          valueFrom:
+            configMapKeyRef:
+              key: AUTH_LDAP
+              name: secrets-env
+        - name: CELERY_BROKER_URL
+          valueFrom:
+            configMapKeyRef:
+              key: CELERY_BROKER_URL
+              name: secrets-env
+        - name: CHRIS_STORE_URL
+          valueFrom:
+            configMapKeyRef:
+              key: CHRIS_STORE_URL
+              name: secrets-env
+        - name: CUBE_CELERY_POLL_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              key: CUBE_CELERY_POLL_INTERVAL
+              name: secrets-env
+        - name: DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: DATABASE_HOST
+              name: secrets-env
+        - name: DATABASE_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: DATABASE_PORT
+              name: secrets-env
+        - name: DJANGO_ALLOWED_HOSTS
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_ALLOWED_HOSTS
+              name: secrets-env
+        - name: DJANGO_COLLECTSTATIC
+          value: "off"
+        - name: DJANGO_CORS_ALLOWED_ORIGINS
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_CORS_ALLOWED_ORIGINS
+              name: secrets-env
+        - name: DJANGO_CORS_ALLOW_ALL_ORIGINS
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_CORS_ALLOW_ALL_ORIGINS
+              name: secrets-env
+        - name: DJANGO_DB_MIGRATE
+          value: "off"
+        - name: DJANGO_SECRET_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_SECRET_KEY
+              name: secrets-env
+        - name: DJANGO_SECURE_PROXY_SSL_HEADER
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_SECURE_PROXY_SSL_HEADER
+              name: secrets-env
+        - name: DJANGO_SETTINGS_MODULE
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_SETTINGS_MODULE
+              name: secrets-env
+        - name: DJANGO_USE_X_FORWARDED_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_USE_X_FORWARDED_HOST
+              name: secrets-env
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_DB
+              name: secrets-env
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_PASSWORD
+              name: secrets-env
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_USER
+              name: secrets-env
+        - name: STATIC_ROOT
+          valueFrom:
+            configMapKeyRef:
+              key: STATIC_ROOT
+              name: secrets-env
+        - name: SWIFT_AUTH_URL
+          valueFrom:
+            configMapKeyRef:
+              key: SWIFT_AUTH_URL
+              name: secrets-env
+        - name: SWIFT_CONTAINER_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: SWIFT_CONTAINER_NAME
+              name: secrets-env
+        - name: SWIFT_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: SWIFT_KEY
+              name: secrets-env
+        - name: SWIFT_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              key: SWIFT_USERNAME
+              name: secrets-env
+      image: ghcr.io/fnndsc/cube:4.0.0.pre6
+      name: scheduler
+      resources: {}
+  restartPolicy: OnFailure
+status: {}

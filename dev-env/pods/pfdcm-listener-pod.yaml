@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.network/extract-pacs: "true"
+    io.kompose.service: pfdcm-listener
+  name: pfdcm-listener
+spec:
+  containers:
+    - args:
+        - sh
+        - -c
+        - mkdir -vp /tmp/data && storescp --fork -od /tmp/data -pm -sp -xcr '/usr/local/bin/px-repack --xcrdir "#p" --xcrfile "#f" --verbosity 0 --logdir /home/dicom/log --datadir /home/dicom/data --cleanup' 11113
+      image: ghcr.io/fnndsc/pfdcm:3.0.12
+      name: pfdcm-listener
+      resources: {}
+      securityContext:
+        runAsUser: 10100
+      volumeMounts:
+        - mountPath: /home/dicom
+          name: pfdcm
+  restartPolicy: OnFailure
+  volumes:
+    - name: pfdcm
+      persistentVolumeClaim:
+        claimName: pfdcm
+status: {}
