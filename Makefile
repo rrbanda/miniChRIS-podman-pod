@@ -4,8 +4,8 @@ create-volume-chris-db:
 
 .PHONY: run-chris-db-pod
 run-chris-db-pod:
-	sudo podman play kube dev-env/pods/chris-db-pod.yaml --configmap=dev-env/pods/secrets.yaml
-	
+	sudo podman play kube dev-env/pods/chris-db-pod.yaml --configmap=dev-env/pods/secrets.yml
+
 .PHONY: reset-podman
 reset-podman:
 	sudo podman system reset
