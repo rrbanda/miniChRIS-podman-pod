@@ -1,6 +1,6 @@
 # ![ChRIS logo](https://raw.githubusercontent.com/FNNDSC/ChRIS_ultron_backEnd/master/docs/assets/logo_chris.png) miniChRIS-podman
 
-[![CI badge](https://github.com/FNNDSC/miniChRIS-podman/workflows/CI/badge.svg)](https://github.com/FNNDSC/miniChRIS-podman/actions?query=workflow%3ACI)
+[![Podman Deploymet CI](https://github.com/veniceofcode/miniChRIS-podman-pod/actions/workflows/makefile.yml/badge.svg)](https://github.com/veniceofcode/miniChRIS-podman-pod/actions/workflows/makefile.yml)
 [![MIT license](https://img.shields.io/github/license/FNNDSC/miniChRIS-podman)](LICENSE)
 
 Run [_ChRIS_](https://chrisproject.org/) using [Podman](https://podman.io).

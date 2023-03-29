@@ -1,4 +1,4 @@
-name: Podman Deploymet CI
+name: Podman Deployment CI
 
 on:
   push:
