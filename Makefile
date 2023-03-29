@@ -13,3 +13,6 @@ run-worker-pod:
 .PHONY: reset-podman
 reset-podman:
 	sudo podman system reset
+
+.PHONY: all
+all: create-volume-chris-db run-chris-db-pod run-worker-pod
