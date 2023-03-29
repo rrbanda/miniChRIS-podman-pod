@@ -1,0 +1,575 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: podminichris-podman
+  name: pod_minichris-podman
+spec:
+  containers:
+  - args:
+    - postgres
+    env:
+    - name: POSTGRES_DB
+      value: chris
+    - name: DJANGO_ALLOWED_HOSTS
+      value: '*'
+    - name: SWIFT_KEY
+      value: testing
+    - name: DJANGO_SECRET_KEY
+      value: secret
+    - name: DJANGO_CORS_ALLOWED_ORIGINS
+      value: https://babymri.org
+    - name: POSTGRES_PASSWORD
+      value: chris1234
+    - name: DJANGO_USE_X_FORWARDED_HOST
+      value: "false"
+    - name: SWIFT_CONTAINER_NAME
+      value: users
+    - name: DJANGO_CORS_ALLOW_ALL_ORIGINS
+      value: "true"
+    - name: CELERY_BROKER_URL
+      value: amqp://queue:5672
+    - name: SWIFT_USERNAME
+      value: chris:chris1234
+    - name: POSTGRES_USER
+      value: chris
+    - name: CHRIS_STORE_URL
+      value: http://localhost:8010/api/v1/
+    - name: SWIFT_AUTH_URL
+      value: http://localhost:8080/auth/v1.0
+    - name: DATABASE_HOST
+      value: 0.0.0.0
+    - name: STATIC_ROOT
+      value: /home/localuser/mod_wsgi-0.0.0.0:8000/htdocs/static/
+    - name: CUBE_CELERY_POLL_INTERVAL
+      value: "5.0"
+    - name: DATABASE_PORT
+      value: "5432"
+    - name: DJANGO_SETTINGS_MODULE
+      value: config.settings.production
+    - name: AUTH_LDAP
+      value: "false"
+    image: docker.io/library/postgres:13
+    name: minichris-podmanchrisdb
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_AUDIT_WRITE
+    volumeMounts:
+    - mountPath: /var/lib/postgresql/data
+      name: bd0ef844a6bff417fd0d5ec2f48743eefe435f302cfd1cbf7a2f9f0770dfbbdd-pvc
+    - mountPath: /var/lib/postgresql
+      name: minichris-podman_chris_db_data-pvc
+  - args:
+    - rabbitmq-server
+    image: docker.io/library/rabbitmq:3
+    name: minichris-podmanqueue1
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_AUDIT_WRITE
+    volumeMounts:
+    - mountPath: /var/lib/rabbitmq
+      name: fb1a9ee29890cbcdb0ee0017641270ea24c19fcdcf1c971b13e65d87572f55cf-pvc
+  - args:
+    - postgres
+    env:
+      - name: POSTGRES_DB
+        value: chris_store
+      - name: POSTGRES_USER
+        value: chris
+      - name: POSTGRES_PASSWORD
+        value: chirs1234
+      - name: PGPORT
+        value: "5433"
+      - name: POSTGRES_PORT
+        value: "5433"
+      - name: DATABASE_PORT
+        value: "5433"
+    image: docker.io/library/postgres:13
+    name: minichris-podmanchrisstoredb
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+          - CAP_MKNOD
+          - CAP_AUDIT_WRITE
+    volumeMounts:
+    - mountPath: /var/lib/postgresql/data
+      name: e11f6df585fa33a8888c8b6a631640e7e1fcf1699114dbad105403fb0489bee8-pvc
+    - mountPath: /var/lib/postgresql
+      name: minichris-podman_chris_store_db_data-pvc
+  - env:
+    - name: SWIFT_USERNAME
+      value: chris:chris1234
+    - name: SWIFT_KEY
+      value: testing
+    image: docker.io/fnndsc/docker-swift-onlyone:latest
+    name: minichris-podmanswift1
+    ports:
+    - containerPort: 8080
+      hostPort: 8080
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_AUDIT_WRITE
+    volumeMounts:
+    - mountPath: /srv
+      name: minichris-podman_swift_storage-pvc
+  - env:
+    - name: SECRET_KEY
+      value: secret
+    - name: PFCON_PASSWORD
+      value: pfcon1234
+    - name: PFCON_USER
+      value: pfcon
+    - name: COMPUTE_SERVICE_URL
+      value: http://localhost:5010/api/v1/
+    image: ghcr.io/fnndsc/pfcon:5.0.0
+    name: pfcon
+    ports:
+    - containerPort: 5005
+      hostPort: 5005
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_AUDIT_WRITE
+      runAsGroup: 0
+      runAsUser: 10100
+    volumeMounts:
+    - mountPath: /var/local/storeBase
+      name: minichris-podman_remote-pvc
+  - args:
+    - /etc/orthanc/
+    image: docker.io/jodogne/orthanc-plugins:1.11.0
+    name: minichris-podmanorthanc1
+    ports:
+    - containerPort: 4242
+      hostPort: 4242
+    - containerPort: 8042
+      hostPort: 8042
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_AUDIT_WRITE
+    volumeMounts:
+    - mountPath: /etc/orthanc/orthanc.json
+      name: home-microshift-miniChRIS-podman-orthanc.json-host-0
+      readOnly: true
+    - mountPath: /var/lib/orthanc/db
+      name: minichris-podman_orthanc-pvc
+  - image: ghcr.io/fnndsc/pfdcm:3.0.12
+    name: pfdcm
+    ports:
+    - containerPort: 4005
+      hostPort: 4005
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_AUDIT_WRITE
+      runAsGroup: 0
+      runAsUser: 10100
+    volumeMounts:
+    - mountPath: /home/dicom/services
+      name: home-microshift-miniChRIS-podman-pfdcm-services-host-0
+      readOnly: true
+    - mountPath: /home/dicom
+      name: minichris-podman_pfdcm-pvc
+  - args:
+    - mod_wsgi-express
+    - start-server
+    - config/wsgi.py
+    - --host
+    - 0.0.0.0
+    - --port
+    - "8010"
+    - --processes
+    - "2"
+    - --server-root
+    - /home/localuser/mod_wsgi-0.0.0.0:8010
+    env:
+    - name: DJANGO_DB_MIGRATE
+      value: "on"
+    - name: DJANGO_SECURE_PROXY_SSL_HEADER
+      value: ""
+    - name: DJANGO_SETTINGS_MODULE
+      value: config.settings.production
+    - name: POSTGRES_PASSWORD
+      value: chirs1234
+    - name: DJANGO_CORS_ALLOWED_ORIGINS
+      value: https://babymri.org
+    - name: POSTGRES_USER
+      value: chris
+    - name: DJANGO_ALLOWED_HOSTS
+      value: '*'
+    - name: DJANGO_CORS_ALLOW_ALL_ORIGINS
+      value: "true"
+    - name: POSTGRES_DB
+      value: chris_store
+    - name: DATABASE_HOST
+      value: 0.0.0.0
+    - name: DJANGO_SECRET_KEY
+      value: secret
+    - name: DJANGO_USE_X_FORWARDED_HOST
+      value: "false"
+    - name: DATABASE_PORT
+      value: "5433"
+    image: ghcr.io/fnndsc/chris_store:2.2.0
+    name: chrisstore
+    ports:
+    - containerPort: 8010
+      hostPort: 8010
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_AUDIT_WRITE
+  - env:
+    - name: CONTAINER_ENV
+      value: podman
+    - name: SECRET_KEY
+      value: secret
+    - name: CONTAINER_USER
+      value: '10100:'
+    - name: JOB_LABELS
+      value: org.chrisproject.miniChRIS=plugininstance
+    - name: ENABLE_HOME_WORKAROUND
+      value: "yes"
+    image: ghcr.io/fnndsc/pman:5.0.0.a1
+    name: pman
+    ports:
+    - containerPort: 5010
+      hostPort: 5010
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_AUDIT_WRITE
+    volumeMounts:
+    - mountPath: /var/run/docker.sock
+      name: run-user-1000-podman-podman.sock-host-0
+  - args:
+    - celery
+    - -A
+    - core
+    - worker
+    - -c
+    - "2"
+    - -l
+    - info
+    - -Q
+    - periodic
+    env:
+    - name: DJANGO_ALLOWED_HOSTS
+      value: '*'
+    - name: DJANGO_SECURE_PROXY_SSL_HEADER
+      value: " "
+    - name: DJANGO_CORS_ALLOW_ALL_ORIGINS
+      value: "true"
+    - name: STATIC_ROOT
+      value: /home/localuser/mod_wsgi-0.0.0.0:8000/htdocs/static/
+    - name: CHRIS_STORE_URL
+      value: http://localhost:8010/api/v1/
+    - name: DATABASE_PORT
+      value: "5432"
+    - name: DATABASE_HOST
+      value: 0.0.0.0
+    - name: CELERY_BROKER_URL
+      value: amqp://queue:5672
+    - name: SWIFT_USERNAME
+      value: chris:chris1234
+    - name: DJANGO_CORS_ALLOWED_ORIGINS
+      value: https://babymri.org
+    - name: POSTGRES_DB
+      value: chris
+    - name: POSTGRES_USER
+      value: chris
+    - name: DJANGO_COLLECTSTATIC
+      value: "off"
+    - name: SWIFT_CONTAINER_NAME
+      value: users
+    - name: CUBE_CELERY_POLL_INTERVAL
+      value: "5.0"
+    - name: DJANGO_USE_X_FORWARDED_HOST
+      value: "false"
+    - name: DJANGO_SETTINGS_MODULE
+      value: config.settings.production
+    - name: SWIFT_AUTH_URL
+      value: http://localhost:8080/auth/v1.0
+    - name: DJANGO_DB_MIGRATE
+      value: "off"
+    - name: AUTH_LDAP
+      value: "false"
+    - name: SWIFT_KEY
+      value: testing
+    - name: DJANGO_SECRET_KEY
+      value: secret
+    - name: POSTGRES_PASSWORD
+      value: chris1234
+    image: ghcr.io/fnndsc/cube:4.0.0.pre6
+    name: minichris-podmanworkerperiodic1
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_AUDIT_WRITE
+  - args:
+    - celery
+    - -A
+    - core
+    - beat
+    - -l
+    - info
+    - --scheduler
+    - django_celery_beat.schedulers:DatabaseScheduler
+    env:
+    - name: DJANGO_DB_MIGRATE
+      value: "off"
+    - name: DJANGO_SECURE_PROXY_SSL_HEADER
+      value: ""
+    - name: DATABASE_PORT
+      value: "5432"
+    - name: SWIFT_USERNAME
+      value: chris:chris1234
+    - name: CELERY_BROKER_URL
+      value: amqp://queue:5672
+    - name: SWIFT_AUTH_URL
+      value: http://localhost:8080/auth/v1.0
+    - name: DJANGO_USE_X_FORWARDED_HOST
+      value: "false"
+    - name: DJANGO_COLLECTSTATIC
+      value: "off"
+    - name: DJANGO_SECRET_KEY
+      value: secret
+    - name: POSTGRES_USER
+      value: chris
+    - name: DATABASE_HOST
+      value: 0.0.0.0
+    - name: CUBE_CELERY_POLL_INTERVAL
+      value: "5.0"
+    - name: SWIFT_CONTAINER_NAME
+      value: users
+    - name: POSTGRES_PASSWORD
+      value: chris1234
+    - name: STATIC_ROOT
+      value: /home/localuser/mod_wsgi-0.0.0.0:8000/htdocs/static/
+    - name: SWIFT_KEY
+      value: testing
+    - name: DJANGO_ALLOWED_HOSTS
+      value: '*'
+    - name: AUTH_LDAP
+      value: "false"
+    - name: DJANGO_SETTINGS_MODULE
+      value: config.settings.production
+    - name: CHRIS_STORE_URL
+      value: http://localhost:8010/api/v1/
+    - name: POSTGRES_DB
+      value: chris
+    - name: DJANGO_CORS_ALLOW_ALL_ORIGINS
+      value: "true"
+    - name: DJANGO_CORS_ALLOWED_ORIGINS
+      value: https://babymri.org
+    image: ghcr.io/fnndsc/cube:4.0.0.pre6
+    name: minichris-podmanscheduler1
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_AUDIT_WRITE
+  - args:
+    - mod_wsgi-express
+    - start-server
+    - config/wsgi.py
+    - --host
+    - 0.0.0.0
+    - --port
+    - "8000"
+    - --processes
+    - "4"
+    - --limit-request-body
+    - "5368709120"
+    - --server-root
+    - /home/localuser/mod_wsgi-0.0.0.0:8000
+    env:
+    - name: DJANGO_SETTINGS_MODULE
+      value: config.settings.production
+    - name: DJANGO_SECURE_PROXY_SSL_HEADER
+      value: " "
+    - name: DJANGO_DB_MIGRATE
+      value: "on"
+    - name: POSTGRES_DB
+      value: chris
+    - name: DJANGO_ALLOWED_HOSTS
+      value: '*'
+    - name: AUTH_LDAP
+      value: "false"
+    - name: SWIFT_CONTAINER_NAME
+      value: users
+    - name: DJANGO_CORS_ALLOWED_ORIGINS
+      value: https://babymri.org
+    - name: DJANGO_COLLECTSTATIC
+      value: "on"
+    - name: DJANGO_SECRET_KEY
+      value: secret
+    - name: DJANGO_CORS_ALLOW_ALL_ORIGINS
+      value: "true"
+    - name: DATABASE_PORT
+      value: "5432"
+    - name: DJANGO_USE_X_FORWARDED_HOST
+      value: "false"
+    - name: CUBE_CELERY_POLL_INTERVAL
+      value: "5.0"
+    - name: POSTGRES_PASSWORD
+      value: chris1234
+    - name: SWIFT_AUTH_URL
+      value: http://localhost:8080/auth/v1.0
+    - name: SWIFT_USERNAME
+      value: chris:chris1234
+    - name: DATABASE_HOST
+      value: 0.0.0.0
+    - name: CELERY_BROKER_URL
+      value: amqp://queue:5672
+    - name: POSTGRES_USER
+      value: chris
+    - name: CHRIS_STORE_URL
+      value: http://localhost:8010/api/v1/
+    - name: SWIFT_KEY
+      value: testing
+    - name: STATIC_ROOT
+      value: /home/localuser/mod_wsgi-0.0.0.0:8000/htdocs/static/
+    image: ghcr.io/fnndsc/cube:4.0.0.pre6
+    name: chris
+    ports:
+    - containerPort: 8000
+      hostPort: 8000
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_AUDIT_WRITE
+  - args:
+    - celery
+    - -A
+    - core
+    - worker
+    - -c
+    - "4"
+    - -l
+    - info
+    - -Q
+    - main1,main2
+    env:
+    - name: STATIC_ROOT
+      value: /home/localuser/mod_wsgi-0.0.0.0:8000/htdocs/static/
+    - name: DJANGO_COLLECTSTATIC
+      value: "off"
+    - name: DJANGO_SECURE_PROXY_SSL_HEADER
+      value: " "
+    - name: POSTGRES_DB
+      value: chris
+    - name: SWIFT_CONTAINER_NAME
+      value: users
+    - name: SWIFT_AUTH_URL
+      value: http://localhost:8080/auth/v1.0
+    - name: DATABASE_HOST
+      value: 0.0.0.0
+    - name: DJANGO_USE_X_FORWARDED_HOST
+      value: "false"
+    - name: DJANGO_SETTINGS_MODULE
+      value: config.settings.production
+    - name: POSTGRES_PASSWORD
+      value: chris1234
+    - name: DJANGO_ALLOWED_HOSTS
+      value: '*'
+    - name: SWIFT_KEY
+      value: testing
+    - name: DJANGO_CORS_ALLOW_ALL_ORIGINS
+      value: "true"
+    - name: CELERY_BROKER_URL
+      value: amqp://queue:5672
+    - name: CUBE_CELERY_POLL_INTERVAL
+      value: "5.0"
+    - name: DJANGO_SECRET_KEY
+      value: secret
+    - name: DJANGO_DB_MIGRATE
+      value: "off"
+    - name: DJANGO_CORS_ALLOWED_ORIGINS
+      value: https://babymri.org
+    - name: DATABASE_PORT
+      value: "5432"
+    - name: POSTGRES_USER
+      value: chris
+    - name: AUTH_LDAP
+      value: "false"
+    - name: CHRIS_STORE_URL
+      value: http://localhost:8010/api/v1/
+    - name: SWIFT_USERNAME
+      value: chris:chris1234
+    image: ghcr.io/fnndsc/cube:4.0.0.pre6
+    name: minichris-podmanworker1
+    resources: {}
+    securityContext:
+      capabilities:
+        drop:
+        - CAP_MKNOD
+        - CAP_AUDIT_WRITE
+  restartPolicy: OnFailure
+  volumes:
+  - name: minichris-podman_chris_db_data-pvc
+    persistentVolumeClaim:
+      claimName: minichris-podman_chris_db_data
+  - name: fb1a9ee29890cbcdb0ee0017641270ea24c19fcdcf1c971b13e65d87572f55cf-pvc
+    persistentVolumeClaim:
+      claimName: fb1a9ee29890cbcdb0ee0017641270ea24c19fcdcf1c971b13e65d87572f55cf
+  - name: minichris-podman_orthanc-pvc
+    persistentVolumeClaim:
+      claimName: minichris-podman_orthanc
+  - name: minichris-podman_pfdcm-pvc
+    persistentVolumeClaim:
+      claimName: minichris-podman_pfdcm
+  - hostPath:
+      path: /run/user/1000/podman/podman.sock
+      type: File
+    name: run-user-1000-podman-podman.sock-host-0
+  - hostPath:
+      path: /home/microshift/miniChRIS-podman/pfdcm-services
+      type: Directory
+    name: home-microshift-miniChRIS-podman-pfdcm-services-host-0
+  - name: bd0ef844a6bff417fd0d5ec2f48743eefe435f302cfd1cbf7a2f9f0770dfbbdd-pvc
+    persistentVolumeClaim:
+      claimName: bd0ef844a6bff417fd0d5ec2f48743eefe435f302cfd1cbf7a2f9f0770dfbbdd
+  - name: e11f6df585fa33a8888c8b6a631640e7e1fcf1699114dbad105403fb0489bee8-pvc
+    persistentVolumeClaim:
+      claimName: e11f6df585fa33a8888c8b6a631640e7e1fcf1699114dbad105403fb0489bee8
+  - name: minichris-podman_chris_store_db_data-pvc
+    persistentVolumeClaim:
+      claimName: minichris-podman_chris_store_db_data
+  - name: minichris-podman_swift_storage-pvc
+    persistentVolumeClaim:
+      claimName: minichris-podman_swift_storage
+  - name: minichris-podman_remote-pvc
+    persistentVolumeClaim:
+      claimName: minichris-podman_remote
+  - hostPath:
+      path: /home/microshift/miniChRIS-podman/orthanc.json
+      type: File
+    name: home-microshift-miniChRIS-podman-orthanc.json-host-0
+status: {}
+

@@ -1,0 +1,31 @@
+# Test miniChRIS-podman with miniChRIS-docker's test suite
+
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: ./minichris.sh
+
+      - uses: actions/checkout@v3
+        with:
+          repository: FNNDSC/miniChRIS-docker
+          path: ./miniChRIS-docker
+      - name: Test
+        run: |
+          set +e
+          ./miniChRIS-docker/test.sh
+          rc=$?
+          [ "$rc" = '0' ] || ./minichris.sh podman-compose logs
+          exit $rc
+
+      - run: ./minichris.sh destroy
+
