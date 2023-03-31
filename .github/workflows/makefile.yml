@@ -42,7 +42,7 @@ jobs:
 
     - name: Test pfcon-pod
       run: |
-        make run-pfcon-mq-pod
+        make run-pfcon-pod
         sudo podman pod ps || exit $?
 
     - name: Sleep for 60s
