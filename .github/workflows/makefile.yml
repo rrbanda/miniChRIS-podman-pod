@@ -66,7 +66,7 @@ jobs:
     - name: Test orthanc-pod
       run: |
         make create-volume-orthanc
-        make run-orthanc-pod
+        make run-orthanc-plugins-pod
         sudo podman pod ps || exit $?
 
     - name: Test scheduler-pod
