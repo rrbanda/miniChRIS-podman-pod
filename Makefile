@@ -16,11 +16,11 @@ run-chris-pod:
 
 .PHONY: run-rabbit-mq-pod
 run-rabbit-mq-pod:
-	sudo podman play kube dev-env/pods/rabbit-mq-pod.yaml --configmap=dev-env/pods/secrets.yml
+	sudo podman play kube dev-env/pods/rabbit-mq-pod.yaml
 
 .PHONY: run-scheduler-pod
 run-scheduler-pod:
-	sudo podman play kube dev-env/pods/scheduler-pod.yaml --configmap=dev-env/pods/secrets.yml
+	sudo podman play kube dev-env/pods/scheduler-pod.yaml
 
 .PHONY: run-pfcon-pod
 run-pfcon-pod:
