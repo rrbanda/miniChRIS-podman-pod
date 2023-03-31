@@ -26,6 +26,17 @@ jobs:
         make run-chris-db-pod
         sudo podman pod ps || exit $?
 
+    - name: Test chris-store-db-pod
+      run: |
+        make create-volume-chris-store-db
+        make run-chris-store-db-pod
+        sudo podman pod ps || exit $?
+
+    - name: Test chris-store-pod
+      run: |
+        make run-chris-store-pod
+        sudo podman pod ps || exit $?
+
     - name: Test worker-pod
       run: |
         make run-worker-pod
