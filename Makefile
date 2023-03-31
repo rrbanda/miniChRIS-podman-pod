@@ -15,7 +15,7 @@ run-chris-db-pod:
 	sudo podman play kube --network chris dev-env/pods/chris-db-pod.yaml --configmap=dev-env/pods/secrets.yml
 
 .PHONY: run-chris-store-db-pod
-run-chris-db-pod:
+run-chris-store-db-pod:
 	sudo podman play kube --network chris dev-env/pods/chris-store-db-pod.yaml --configmap=dev-env/pods/secrets.yml
 
 .PHONY: run-chris-pod
