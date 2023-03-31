@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Test run-chris-db-pod
+    - name: Test chris-db-pod
       run: |
         make create-volume-chris-db
         make run-chris-db-pod
@@ -28,6 +28,21 @@ jobs:
     - name: Test chris-pod
       run: |
         make run-chris-pod
+        sudo podman pod ps || exit $?
+
+    - name: Test rabbit-mq-pod
+      run: |
+        make run-rabbit-mq-pod
+        sudo podman pod ps || exit $?
+
+    - name: Test scheduler-pod
+      run: |
+        make run-rabbit-mq-pod
+        sudo podman pod ps || exit $?
+
+    - name: Test pfcon-pod
+      run: |
+        make run-pfcon-mq-pod
         sudo podman pod ps || exit $?
 
     - name: Sleep for 60s

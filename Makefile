@@ -18,13 +18,13 @@ run-chris-pod:
 run-rabbit-mq-pod:
 	sudo podman play kube dev-env/pods/rabbit-mq-pod.yaml --configmap=dev-env/pods/secrets.yml
 
-.PHONY: run-
-run-chris-pod:
-	sudo podman play kube dev-env/pods/chris-pod.yaml --configmap=dev-env/pods/secrets.yml
+.PHONY: run-scheduler-pod
+run-scheduler-pod:
+	sudo podman play kube dev-env/pods/scheduler-pod.yaml --configmap=dev-env/pods/secrets.yml
 
-.PHONY: run-
-run-chris-pod:
-	sudo podman play kube dev-env/pods/chris-pod.yaml --configmap=dev-env/pods/secrets.yml
+.PHONY: run-pfcon-pod
+run-pfcon-pod:
+	sudo podman play kube dev-env/pods/pfcon-nonroot-user-volume-fix-pod.yaml
 
 .PHONY: run-
 run-chris-pod:
