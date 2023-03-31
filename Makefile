@@ -36,7 +36,7 @@ run-swift-pod:
 
 .PHONY: run-cube-pod
 run-cube-pod:
-	sudo podman play kube --network chris dev-env/pods/chris-pod.yaml --configmap=dev-env/pods/secrets.yml
+	sudo podman play kube --network chris dev-env/pods/cube-pod.yaml --configmap=dev-env/pods/secrets.yml
 
 .PHONY: run-chris-store-pod
 run-chris-store-pod:

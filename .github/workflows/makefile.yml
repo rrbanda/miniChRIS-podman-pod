@@ -75,11 +75,13 @@ jobs:
 
     - name: Test pman-pod
       run: |
+        make create-volume-pman
         make run-pman-pod
         sudo podman pod ps || exit $?
 
     - name: Test orthanc-pod
       run: |
+        make create-volume-orthanc
         make run-orthanc-pod
         sudo podman pod ps || exit $?
 
@@ -88,14 +90,14 @@ jobs:
       with:
         time: 60s
         
-    - name: Testing Enviornment
+    - name: Testing Environment
       run: |
         sudo podman ps 
         sudo podman ps --all --format "{{.Names}} {{.Ports}} {{.Mounts}} {{.Status}}"
         sudo podman stats --no-stream
         sudo podman pod stats --no-stream
 
-    - name: Stop All Pods
+    - name: Stop All running Pods
       run: |
         sudo podman pod ps || exit $?
         sudo podman pod stop --all
