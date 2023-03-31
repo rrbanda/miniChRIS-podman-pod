@@ -53,6 +53,11 @@ jobs:
         make run-chris-store-pod
         sudo podman pod ps || exit $?
 
+    - name: Test chris-store-ui-pod
+      run: |
+        make run-chris-store-ui-pod
+        sudo podman pod ps || exit $?
+
     - name: Test worker-pod
       run: |
         make run-worker-pod

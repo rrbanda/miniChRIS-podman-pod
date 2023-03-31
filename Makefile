@@ -42,6 +42,10 @@ run-cube-pod:
 run-chris-store-pod:
 	sudo podman play kube --network chris dev-env/pods/chris-store-pod.yaml --configmap=dev-env/pods/secrets.yml
 
+.PHONY: run-chris-store-ui-pod
+run-chris-store-ui-pod:
+	sudo podman play kube --network chris dev-env/pods/chris-store-ui-pod.yaml --configmap=dev-env/pods/secrets.yml
+
 .PHONY: run-chris-ui-pod
 run-chris-ui-pod:
 	sudo podman play kube --network chris dev-env/pods/chris-ui-pod.yaml
