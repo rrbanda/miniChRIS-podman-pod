@@ -14,6 +14,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Test create-podman-network-chris
+      run: |
+        make create-podman-network-chris
+        make run-podman-network-chris
+        sudo podman network ls || exit $?
+
     - name: Test chris-db-pod
       run: |
         make create-volume-chris-db
