@@ -37,6 +37,11 @@ jobs:
         make run-chris-store-pod
         sudo podman pod ps || exit $?
 
+    - name: Test chris-ui-pod
+      run: |
+        make run-chris-ui-pod
+        sudo podman pod ps || exit $?
+
     - name: Test worker-pod
       run: |
         make run-worker-pod
