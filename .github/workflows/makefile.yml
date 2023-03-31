@@ -106,13 +106,27 @@ jobs:
       uses: juliangruber/sleep-action@v1
       with:
         time: 60s
-        
+
+    - name: Pod Health Check Testing Networking  
+      run: | 
+        echo "Testing Networking"
+        echo "If there is 1 container in pod that means the container has not started but the infra container has started"
+        echo "If there are 2 containers in pod that means the networking is working for that pod"
+        ./check _pods.sh
+
     - name: Testing Environment
       run: |
         sudo podman ps 
         sudo podman ps --all --format "{{.Names}} {{.Ports}} {{.Mounts}} {{.Status}}"
         sudo podman stats --no-stream
         sudo podman pod stats --no-stream
+
+    - name: Advanced tests
+      run: | 
+          podman pod logs -c chris_db-chris_db chris_db
+          podman pod logs -c chris_store_db-chris_store_db chris_store_db
+
+
 
     - name: Stop All running Pods
       run: |

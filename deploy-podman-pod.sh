@@ -55,6 +55,8 @@ make create-volume-pman
 make run-pman-pod
 sudo podman pod ps || exit $?
 
+echo "Waiting for all pods to be ready..."
+echo "Sleeping 60s..."
 sleep 60s
         
 sudo podman ps 
