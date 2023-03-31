@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Pod
 metadata:
-  name: orthanc
+  name: orthanc-plugins
   spec:
     containers:
-      - name: orthanc
+      - name: orthanc-plugins
         envFrom:
           - configMapRef:
               name: secrets

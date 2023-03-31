@@ -38,9 +38,9 @@ jobs:
         make run-swift-pod
         sudo podman pod ps || exit $?
 
-    - name: Test chris-store-pod
+    - name: Test cube-pod
       run: |
-        make run-chris-store-pod
+        make run-cube-pod
         sudo podman pod ps || exit $?
 
     - name: Test chris-ui-pod
@@ -48,19 +48,25 @@ jobs:
         make run-chris-ui-pod
         sudo podman pod ps || exit $?
 
+    - name: Test chris-store-pod
+      run: |
+        make run-chris-store-pod
+        sudo podman pod ps || exit $?
+
     - name: Test worker-pod
       run: |
         make run-worker-pod
         sudo podman pod ps || exit $?
 
-    - name: Test cube-pod
-      run: |
-        make run-cube-pod
-        sudo podman pod ps || exit $?
-
     - name: Test rabbit-mq-pod
       run: |
         make run-rabbit-mq-pod
+        sudo podman pod ps || exit $?
+
+    - name: Test orthanc-pod
+      run: |
+        make create-volume-orthanc
+        make run-orthanc-pod
         sudo podman pod ps || exit $?
 
     - name: Test scheduler-pod
@@ -77,12 +83,6 @@ jobs:
       run: |
         make create-volume-pman
         make run-pman-pod
-        sudo podman pod ps || exit $?
-
-    - name: Test orthanc-pod
-      run: |
-        make create-volume-orthanc
-        make run-orthanc-pod
         sudo podman pod ps || exit $?
 
     - name: Sleep for 60s

@@ -66,9 +66,9 @@ run-worker-pod:
 run-pman-pod:
 	sudo podman play kube --network chris dev-env/pods/pman-pod.yaml --configmap=dev-env/pods/secrets.yml
 
-.PHONY: run-orthanc-pod
-run-pman-pod:
-	sudo podman play kube --network chris dev-env/pods/orthanc-pod.yaml --configmap=dev-env/pods/secrets.yml
+.PHONY: run-orthanc-plugins-pod
+run-orthanc-plugins-pod:
+	sudo podman play kube --network chris dev-env/pods/orthanc-plugins-pod.yaml --configmap=dev-env/pods/secrets.yml
 
 .PHONY: reset-podman
 reset-podman:
