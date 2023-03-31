@@ -10,6 +10,10 @@ create-volume-chris-db:
 create-volume-chris-store-db:
 	sudo podman volume create chris_store_db
 
+.PHONY: create-volume-swift
+create-volume-swift:
+	sudo podman volume create swift
+
 .PHONY: run-chris-db-pod
 run-chris-db-pod:
 	sudo podman play kube --network chris dev-env/pods/chris-db-pod.yaml --configmap=dev-env/pods/secrets.yml
@@ -17,6 +21,10 @@ run-chris-db-pod:
 .PHONY: run-chris-store-db-pod
 run-chris-store-db-pod:
 	sudo podman play kube --network chris dev-env/pods/chris-store-db-pod.yaml --configmap=dev-env/pods/secrets.yml
+
+.PHONY: run-swift-pod
+run-swift-pod:
+	sudo podman play kube --network chris dev-env/pods/swift-pod.yaml --configmap=dev-env/pods/secrets.yml
 
 .PHONY: run-chris-pod
 run-chris-pod:

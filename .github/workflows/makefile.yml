@@ -32,6 +32,12 @@ jobs:
         make run-chris-store-db-pod
         sudo podman pod ps || exit $?
 
+    - name: Test swift-pod
+      run: |
+        make create-volume-swift
+        make run-swift-pod
+        sudo podman pod ps || exit $?
+
     - name: Test chris-store-pod
       run: |
         make run-chris-store-pod

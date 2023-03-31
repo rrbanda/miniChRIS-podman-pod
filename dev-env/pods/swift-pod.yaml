@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Pod
+metadata:
+  name: swift
+  spec:
+    containers:
+      - name: swift
+        envFrom:
+          - configMapRef:
+              name: secrets
+        image: docker.io/fnndsc/docker-swift-onlyone:latest
+        ports:
+          - containerPort: 8080
+        resources: {}
+  restartPolicy: Always
+status: {}
