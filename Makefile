@@ -20,7 +20,7 @@ run-rabbit-mq-pod:
 
 .PHONY: run-scheduler-pod
 run-scheduler-pod:
-	sudo podman play kube dev-env/pods/scheduler-pod.yaml
+	sudo podman play kube dev-env/pods/scheduler-pod.yaml --configmap=dev-env/pods/secrets.yml
 
 .PHONY: run-pfcon-pod
 run-pfcon-pod:
