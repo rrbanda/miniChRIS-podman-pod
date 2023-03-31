@@ -14,6 +14,22 @@ run-worker-pod:
 run-chris-pod:
 	sudo podman play kube dev-env/pods/chris-pod.yaml --configmap=dev-env/pods/secrets.yml
 
+.PHONY: run-rabbit-mq-pod
+run-rabbit-mq-pod:
+	sudo podman play kube dev-env/pods/rabbit-mq-pod.yaml --configmap=dev-env/pods/secrets.yml
+
+.PHONY: run-
+run-chris-pod:
+	sudo podman play kube dev-env/pods/chris-pod.yaml --configmap=dev-env/pods/secrets.yml
+
+.PHONY: run-
+run-chris-pod:
+	sudo podman play kube dev-env/pods/chris-pod.yaml --configmap=dev-env/pods/secrets.yml
+
+.PHONY: run-
+run-chris-pod:
+	sudo podman play kube dev-env/pods/chris-pod.yaml --configmap=dev-env/pods/secrets.yml
+
 .PHONY: reset-podman
 reset-podman:
 	sudo podman system reset
