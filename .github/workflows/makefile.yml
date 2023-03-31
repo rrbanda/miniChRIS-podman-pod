@@ -81,6 +81,7 @@ jobs:
 
     - name: Test pfcon-pod
       run: |
+        make create-volume-pfcon
         make run-pfcon-pod
         sudo podman pod ps || exit $?
 

@@ -22,6 +22,10 @@ create-volume-orthanc:
 create-volume-pman:
 	sudo podman volume create pman
 
+.PHONY: create-volume-pfcon
+create-volume-pfcon:
+	sudo podman volume create pfcon
+
 .PHONY: run-chris-db-pod
 run-chris-db-pod:
 	sudo podman play kube --network chris dev-env/pods/chris-db-pod.yaml --configmap=dev-env/pods/secrets.yml
