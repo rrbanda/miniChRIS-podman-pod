@@ -79,6 +79,16 @@ jobs:
         make run-scheduler-pod
         sudo podman pod ps || exit $?
 
+    - name: Test pfdcm-pod
+      run: |
+        make run-pfdcm-pod
+        sudo podman pod ps || exit $?
+
+    - name: Test pfdcm-listener-pod
+      run: |
+        make run-pfdcm-listener-pod
+        sudo podman pod ps || exit $?
+
     - name: Test pfcon-pod
       run: |
         make create-volume-pfcon

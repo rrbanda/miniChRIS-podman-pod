@@ -62,6 +62,14 @@ run-rabbit-mq-pod:
 run-scheduler-pod:
 	sudo podman play kube --network chris dev-env/pods/scheduler-pod.yaml --configmap=dev-env/pods/secrets.yml
 
+.PHONY: run-pfdcm-pod
+run-pfdcm-pod:
+	sudo podman play kube --network chris dev-env/pods/pfdcm-pod.yaml
+
+.PHONY: run-pfdcm-listener-pod
+run-pfdcm-listener-pod:
+	sudo podman play kube --network chris dev-env/pods/pfdcm-listener-pod.yaml
+
 .PHONY: run-pfcon-pod
 run-pfcon-pod:
 	sudo podman play kube --network chris dev-env/pods/pfcon-nonroot-user-volume-fix-pod.yaml
