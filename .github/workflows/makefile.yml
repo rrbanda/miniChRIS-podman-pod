@@ -109,6 +109,7 @@ jobs:
 
     - name: Pod Health Check Testing Networking  
       run: | 
+        pwd
         echo "Testing Networking"
         echo "If there is 1 container in pod that means the container has not started but the infra container has started"
         echo "If there are 2 containers in pod that means the networking is working for that pod"
