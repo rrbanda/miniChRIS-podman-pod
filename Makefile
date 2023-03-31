@@ -18,6 +18,10 @@ create-volume-swift:
 create-volume-orthanc:
 	sudo podman volume create orthanc
 
+.PHONY: create-volume-pfdcm
+create-volume-pfdcm:
+	sudo podman volume create pfdcm
+
 .PHONY: create-volume-pman
 create-volume-pman:
 	sudo podman volume create pman

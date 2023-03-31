@@ -81,6 +81,7 @@ jobs:
 
     - name: Test pfdcm-pod
       run: |
+        make create-volume-pfdcm
         make run-pfdcm-pod
         sudo podman pod ps || exit $?
 
