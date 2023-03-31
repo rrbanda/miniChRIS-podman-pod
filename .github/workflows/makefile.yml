@@ -53,9 +53,9 @@ jobs:
         make run-worker-pod
         sudo podman pod ps || exit $?
 
-    - name: Test chris-pod
+    - name: Test cube-pod
       run: |
-        make run-chris-pod
+        make run-cube-pod
         sudo podman pod ps || exit $?
 
     - name: Test rabbit-mq-pod
@@ -71,6 +71,16 @@ jobs:
     - name: Test pfcon-pod
       run: |
         make run-pfcon-pod
+        sudo podman pod ps || exit $?
+
+    - name: Test pman-pod
+      run: |
+        make run-pman-pod
+        sudo podman pod ps || exit $?
+
+    - name: Test orthanc-pod
+      run: |
+        make run-orthanc-pod
         sudo podman pod ps || exit $?
 
     - name: Sleep for 60s

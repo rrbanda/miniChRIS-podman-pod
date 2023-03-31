@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Pod
+metadata:
+  name: orthanc
+  spec:
+    containers:
+      - name: orthanc
+        envFrom:
+          - configMapRef:
+              name: secrets
+        image: docker.io/jodogne/orthanc-plugins:1.11.0
+        ports:
+          - containerPort: 8042
+        resources: {}
+  restartPolicy: Always
+status: {}

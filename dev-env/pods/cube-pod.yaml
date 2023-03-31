@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Pod
 metadata:
-  name: chris
+  name: cube
   spec:
     containers:
-      - name: chris
+      - name: cube
         envFrom:
           - configMapRef:
               name: secrets
-        image: ghcr.io/fnndsc/chris:4.0.0.pre6
+        image: ghcr.io/fnndsc/cube:4.0.0.pre6
         ports:
           - containerPort: 8000
         resources: {}

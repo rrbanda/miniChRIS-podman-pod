@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Pod
+metadata:
+  name: pman
+  spec:
+    containers:
+      - name: pman
+        envFrom:
+          - configMapRef:
+              name: secrets
+        image: ghcr.io/fnndsc/pman:5.0.0.a1
+        ports:
+          - containerPort: 5010
+        resources: {}
+  restartPolicy: Always
+status: {}
