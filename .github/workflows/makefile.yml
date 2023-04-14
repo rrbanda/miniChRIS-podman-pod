@@ -41,7 +41,8 @@ jobs:
         echo "If there are 2 containers in pod that means the networking is working for that pod"
         sudo podman ps 
         sudo podman pod ps 
-        /home/runner/work/miniChRIS-podman-pod/check_pods.sh
+        ls -lath ./check_pods.sh || exit $?
+        bash -x ./check_pods.sh
 
     - name: Testing Environment
       run: |
