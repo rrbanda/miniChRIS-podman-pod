@@ -18,6 +18,7 @@ jobs:
       run: |
         pwd
         ls -lath . 
+        ls -lath  $(pwd)/minchris.sh || exit $?
         $(pwd)/minchris.sh minichris_up
 
     - name: Sleep for 60s
