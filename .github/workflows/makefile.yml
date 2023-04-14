@@ -18,7 +18,7 @@ jobs:
       run: |
         pwd
         ls -lath . 
-        ls -lath  minchris.sh || exit $?
+        ls -lath  /home/runner/work/miniChRIS-podman-pod/miniChRIS-podman-pod/minchris.sh || exit $?
         bash -x minchris.sh minichris_up
 
     - name: Sleep for 60s
