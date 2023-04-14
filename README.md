@@ -55,10 +55,6 @@ cd miniChRIS-podman
 ./minichris.sh destroy
 ```
 
-### Not Working?
-
-idk, ask Jennings... https://matrix.to/#/@jennydaman:fedora.im
-
 ## Usage
 
 A default superuser `chris:chris1234` is created.

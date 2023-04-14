@@ -1,6 +1,4 @@
 #!/bin/bash
-# Over-engineered script to run ChRIS using Podman.
-#
 
 # -----------------------------------------------------------------------------
 #
