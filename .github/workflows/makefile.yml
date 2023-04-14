@@ -16,6 +16,11 @@ jobs:
 
     - name: get version of podman
       run: |
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        brew install podman
+        podman machine init
+        podman machine start
+        podman info
         podman --version
 
     - name: minichris_up
