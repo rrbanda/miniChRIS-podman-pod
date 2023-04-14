@@ -16,6 +16,8 @@ jobs:
 
     - name: get version of podman
       run: |
+        sudo apt-get update -y 
+        sudo apt-get upgrade -y 
         podman --version
 
     - name: minichris_up
