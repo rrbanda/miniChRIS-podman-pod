@@ -18,8 +18,8 @@ jobs:
       run: |
         pwd
         ls -lath . 
-        ls -lath ./minchris.sh || exit $?
-        bash -x ./minchris.sh minichris_up
+        ls -lath ./minichris.sh || exit $?
+        bash -x ./minichris.sh minichris_up
 
     - name: Sleep for 60s
       uses: juliangruber/sleep-action@v1
