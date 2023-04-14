@@ -14,93 +14,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Test podman-network-chris
+    - name: minichris_up
       run: |
-        make create-podman-network-chris
-        make run-podman-network-chris
-        sudo podman network ls || exit $?
+        ./minchris.sh minichris_up
 
-    - name: Test chris-db-pod
-      run: |
-        make create-volume-chris-db
-        make run-chris-db-pod
-        sudo podman pod ps || exit $?
 
-    - name: Test chris-store-db-pod
-      run: |
-        make create-volume-chris-store-db
-        make run-chris-store-db-pod
-        sudo podman pod ps || exit $?
-
-    - name: Test swift-pod
-      run: |
-        make create-volume-swift
-        make run-swift-pod
-        sudo podman pod ps || exit $?
-
-    - name: Test cube-pod
-      run: |
-        make run-cube-pod
-        sudo podman pod ps || exit $?
-
-    - name: Test chris-ui-pod
-      run: |
-        make run-chris-ui-pod
-        sudo podman pod ps || exit $?
-
-    - name: Test chris-store-pod
-      run: |
-        make run-chris-store-pod
-        sudo podman pod ps || exit $?
-
-    - name: Test chris-store-ui-pod
-      run: |
-        make run-chris-store-ui-pod
-        sudo podman pod ps || exit $?
-
-    - name: Test worker-pod
-      run: |
-        make run-worker-pod
-        sudo podman pod ps || exit $?
-
-    - name: Test rabbit-mq-pod
-      run: |
-        make run-rabbit-mq-pod
-        sudo podman pod ps || exit $?
-
-    - name: Test orthanc-pod
-      run: |
-        make create-volume-orthanc
-        make run-orthanc-plugins-pod
-        sudo podman pod ps || exit $?
-
-    - name: Test scheduler-pod
-      run: |
-        make run-scheduler-pod
-        sudo podman pod ps || exit $?
-
-    - name: Test pfdcm-pod
-      run: |
-        make create-volume-pfdcm
-        make run-pfdcm-pod
-        sudo podman pod ps || exit $?
-
-    - name: Test pfdcm-listener-pod
-      run: |
-        make run-pfdcm-listener-pod
-        sudo podman pod ps || exit $?
-
-    - name: Test pfcon-pod
-      run: |
-        make create-volume-pfcon
-        make run-pfcon-pod
-        sudo podman pod ps || exit $?
-
-    - name: Test pman-pod
-      run: |
-        make create-volume-pman
-        make run-pman-pod
-        sudo podman pod ps || exit $?
 
     - name: Sleep for 60s
       uses: juliangruber/sleep-action@v1
@@ -131,8 +49,6 @@ jobs:
 
 
 
-    - name: Stop All running Pods
+    - name: minichris_down
       run: |
-        sudo podman pod ps || exit $?
-        sudo podman pod stop --all
-        sudo podman pod rm --all
+        ./minchris.sh minichris_down
