@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: get version of podman
+    - name: Configure and install podman 4.x
       run: |
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         brew install podman

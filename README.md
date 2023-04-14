@@ -5,6 +5,9 @@
 
 Run [_ChRIS_](https://chrisproject.org/) using [Podman](https://podman.io).
 
+## Requirements
+* `podman version 4.4.1` and up
+
 ## Abstract
 
 _miniChRIS-podman_ is a fork of [_miniChRIS-docker_](https://github.com/FNNDSC/miniChRIS-docker)
