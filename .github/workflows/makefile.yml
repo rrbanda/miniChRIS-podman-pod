@@ -16,6 +16,7 @@ jobs:
 
     - name: minichris_up
       run: |
+        pwd
         ./minchris.sh minichris_up
 
 
