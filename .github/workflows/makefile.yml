@@ -9,16 +9,13 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v3
 
     - name: get version of podman
       run: |
-        sudo apt-get update -y 
-        sudo apt-get upgrade -y 
-        sudo apt-get -y install podman
         podman --version
 
     - name: minichris_up
