@@ -14,10 +14,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: get version of podman
+      run: |
+        podman --version
+
     - name: minichris_up
       run: |
-        pwd
-        ls -lath . 
         ls -lath ./minichris.sh || exit $?
         bash -x ./minichris.sh up
 
