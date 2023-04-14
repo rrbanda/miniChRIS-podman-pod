@@ -1,0 +1,94 @@
+---
+# pfcon+pman pair using Podman
+
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: minichris-pfcon
+  labels:
+    app: minichris-pfcon
+    app.kubernetes.io/component: computeresource
+    app.kubernetes.io/part-of: miniChRIS
+  annotations:
+    kubernetes.io/description: "pfcon+pman services connecting CUBE to Podman"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minichris-pfcon
+  template:
+    metadata:
+      name: minichris-pfcon
+      labels:
+        app: minichris-pfcon
+    spec:
+      containers:
+        - name: pfcon
+          image: ghcr.io/fnndsc/pfcon:5.0.0
+          ports:
+            - name: pfcon
+              containerPort: 5005
+          env:
+            - name: COMPUTE_SERVICE_URL
+              value: http://localhost:5010/api/v1/
+            - name: SECRET_KEY
+              value: secret
+            - name: PFCON_USER
+              value: pfcon
+            - name: PFCON_PASSWORD
+              value: pfcon1234
+          volumeMounts:
+            - mountPath: /var/local/storeBase
+              name: storebase
+
+        - name: pman
+          image: ghcr.io/fnndsc/pman:5.0.0.a4
+          ports:
+            - name: pman
+              containerPort: 5010
+          env:
+            - name: CONTAINER_ENV
+              value: docker
+            - name: STORAGE_TYPE
+              value: docker_local_volume
+            - name: VOLUME_NAME
+              value: minichris-storebase
+            - name: STOREBASE
+            - name: SECRET_KEY
+              value: secret
+          volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: podman-socket
+
+      # Let SELinux allow us to access the Podman socket
+      # https://unix.stackexchange.com/a/595152
+      securityContext:
+        seLinuxOptions:
+          type: spc_t
+
+      volumes:
+        - name: storebase
+          persistentVolumeClaim:
+            claimName: minichris-storebase
+        - name: podman-socket
+          hostPath:
+            # pman needs to run containers, and it does so by communicating with the Podman socket.
+            # This means that the Podman system service must be running, and the socket's path
+            # must be known.
+            # The hard-coded path below is replaced with the user-specific value by minichris.sh
+            path: /run/user/1000/podman/podman.sock
+            type: Socket
+
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minichris-storebase
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi

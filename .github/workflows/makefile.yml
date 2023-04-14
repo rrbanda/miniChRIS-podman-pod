@@ -20,8 +20,6 @@ jobs:
         ls -lath . 
         $(pwd)/minchris.sh minichris_up
 
-
-
     - name: Sleep for 60s
       uses: juliangruber/sleep-action@v1
       with:
