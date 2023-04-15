@@ -9,43 +9,43 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Configure and install podman 4.x
-      run: |
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        brew install podman
-        podman machine init
-        podman machine start
+      - uses: actions/checkout@v3
+      - name: Configure and install podman 4.x
+        run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          brew install podman
+          podman machine init
+          podman machine start
 
-        - name: Get Podman Info
-          run: podman info
+      - name: Get Podman Info
+        run: podman info
 
-        - name: Checkout
-          uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-        - name: Start Chris
-          run: ./podman/minichris.sh up
+      - name: Start Chris
+        run: ./podman/minichris.sh up
 
-        - name: Checkout miniChRIS-docker
-          uses: actions/checkout@v3
-          with:
-            repository: FNNDSC/miniChRIS-docker
-            path: ./miniChRIS-docker
+      - name: Checkout miniChRIS-docker
+        uses: actions/checkout@v3
+        with:
+          repository: FNNDSC/miniChRIS-docker
+          path: ./miniChRIS-docker
 
-        - name: Test Chris
-          run: |
-            set +e
-            ./miniChRIS-docker/test.sh
-            rc=$?
-            
-            # if tests fail, print out all logs
-            if [ "$rc" != '0' ]; then
-              set -x
-              for c in $(podman ps -a --format '{{ .Names }}' --filter 'name=minichris'); do
-                podman logs $c
-              done
-            fi
-            
-            exit $rc
-        - name: Stop Chris
-          run: ./podman/minichris.sh down
+      - name: Test Chris
+        run: |
+          set +e
+          ./miniChRIS-docker/test.sh
+          rc=$?
+          
+          # if tests fail, print out all logs
+          if [ "$rc" != '0' ]; then
+            set -x
+            for c in $(podman ps -a --format '{{ .Names }}' --filter 'name=minichris'); do
+              podman logs $c
+            done
+          fi
+          
+          exit $rc
+      - name: Stop Chris
+        run: ./podman/minichris.sh down
