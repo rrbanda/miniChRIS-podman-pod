@@ -1,11 +1,13 @@
 # Test miniChRIS-k8s with miniChRIS-docker's test suite
 
 name: CI
+
 on:
   push:
     branches: [ dev ]
   pull_request:
     branches: [ dev ]
+
 jobs:
   Run-using-podman:
     runs-on: ubuntu-22.04
@@ -20,7 +22,6 @@ jobs:
             echo '+cpu +io +memory +pids' >> /sys/fs/cgroup/user.slice/user-$(id -u).slice/cgroup.subtree_control
             echo '+cpu +io +memory +pids' >> /sys/fs/cgroup/user.slice/user-$(id -u).slice/user@$(id -u).service/cgroup.subtree_control
           "
-          # https://podman.io/getting-started/installation#ubuntu
           sudo mkdir -p /etc/apt/keyrings
           curl -fsSL https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/xUbuntu_$(lsb_release -rs)/Release.key \
             | gpg --dearmor \
@@ -35,7 +36,7 @@ jobs:
           systemctl --user daemon-reload
           systemctl --user restart podman.service
 
-      - name: Get Podman Info
+      - name: Check Podman Info
         run: podman info
 
       - name: Checkout
@@ -50,7 +51,7 @@ jobs:
           repository: FNNDSC/miniChRIS-docker
           path: ./miniChRIS-docker
 
-      - name: Test
+      - name: Test Chris
         run: |
           set +e
           ./miniChRIS-docker/test.sh
@@ -63,22 +64,7 @@ jobs:
               podman logs $c
             done
           fi
-          exit $rc
-      - name: Pod Health Check Testing Networking
-        run: |
-          pwd
-          echo "Testing Networking"
-          echo "If there is 1 container in pod that means the container has not started but the infra container has started"
-          echo "If there are 2 containers in pod that means the networking is working for that pod"
-          sudo podman ps
-          sudo podman pod ps
-          ./check_pods.sh
 
-      - name: Testing Environment
-        run: |
-          sudo podman ps 
-          sudo podman ps --all --format "{{.Names}} {{.Ports}} {{.Mounts}} {{.Status}}"
-          sudo podman stats --no-stream
-          sudo podman pod stats --no-stream
+          exit $rc
       - name: Stop CUBE
         run: ./podman/minichris.sh down
