@@ -1,0 +1,53 @@
+---
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: minichris-swift
+  labels:
+    app: minichris-swift
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: miniChRIS
+  annotations:
+    kubernetes.io/description: "Database for ChRIS"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minichris-swift
+  template:
+    metadata:
+      name: minichris-swift
+      labels:
+        app: minichris-swift
+    spec:
+      containers:
+        - name: swift
+          image: docker.io/fnndsc/docker-swift-onlyone:latest
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: minichris-docker-swift-onlyone-config
+          volumeMounts:
+            - name: swift-storage
+              mountPath: /srv
+
+      volumes:
+        - name: swift-storage
+          persistentVolumeClaim:
+            claimName: minichris-swift-storage
+
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minichris-swift-storage
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi

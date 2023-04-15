@@ -1,0 +1,99 @@
+---
+# Deployment configuration for ChRIS_ultron_backEnd (CUBE).
+#
+# CUBE consists of:
+#
+# - a server which handles HTTP requests
+# - several Celery workers
+#
+# This file is convenient for running a single replica of CUBE on Podman.
+# In large production use cases, the above components should be defined
+# in multiple separate Deployments because they can scale independently of one another.
+
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: minichris-cube
+  labels:
+    app: minichris-cube
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/part-of: miniChRIS
+  annotations:
+    kubernetes.io/description: "ChRIS_ultron_backEnd in a single replica of a single pod."
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minichris-cube
+  template:
+    metadata:
+      name: minichris-cube
+      labels:
+        app: minichris-cube
+        org.chrisproject.role: "ChRIS ultron backEnd"  # selector used by chrisomatic
+    spec:
+      initContainers:
+        - name: migratedb
+          image: ghcr.io/fnndsc/cube:4.0.0.pre7
+          command:
+            - sh
+            - -c
+            - 'python migratedb.py -u $POSTGRES_USER -p $POSTGRES_PASSWORD -d $POSTGRES_DB --host $DATABASE_HOST --noinput'
+          envFrom:
+            - configMapRef:
+                name: minichris-cube-config
+            - configMapRef:
+                name: minichris-db-config
+            - configMapRef:
+                name: minichris-docker-swift-onlyone-config
+      containers:
+        - name: server
+          image: ghcr.io/fnndsc/cube:4.0.0.pre7
+          ports:
+            - name: http
+              containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: minichris-cube-config
+            - configMapRef:
+                name: minichris-db-config
+            - configMapRef:
+                name: minichris-docker-swift-onlyone-config
+          env:
+            - name: DJANGO_COLLECTSTATIC
+              value: "on"
+
+        - name: cube-worker
+          image: ghcr.io/fnndsc/cube:4.0.0.pre7
+          command: ["celery", "-A", "core", "worker", "-c", "4", "-l", "info", "-Q", "main1,main2"]
+          envFrom:
+            - configMapRef:
+                name: minichris-cube-config
+            - configMapRef:
+                name: minichris-db-config
+            - configMapRef:
+                name: minichris-docker-swift-onlyone-config
+
+        - name: cube-worker-periodic
+          image: ghcr.io/fnndsc/cube:4.0.0.pre7
+          command: ["celery", "-A", "core", "worker", "-c", "2", "-l", "info", "-Q", "periodic"]
+          envFrom:
+            - configMapRef:
+                name: minichris-cube-config
+            - configMapRef:
+                name: minichris-db-config
+            - configMapRef:
+                name: minichris-docker-swift-onlyone-config
+
+        - name: cube-celery-beat
+          image: ghcr.io/fnndsc/cube:4.0.0.pre7
+          command: ["celery", "-A", "core", "beat", "-l", "info", "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler"]
+          envFrom:
+            - configMapRef:
+                name: minichris-cube-config
+            - configMapRef:
+                name: minichris-db-config
+            - configMapRef:
+                name: minichris-docker-swift-onlyone-config
+

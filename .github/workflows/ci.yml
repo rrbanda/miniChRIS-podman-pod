@@ -9,7 +9,7 @@ on:
     branches: [ dev ]
 
 jobs:
-  test-podman:
+  Run-using-latest-podman:
     runs-on: ubuntu-22.04
     steps:
         # Pre-installed Podman version is version 3, we need to install version 4.
