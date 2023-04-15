@@ -9,7 +9,7 @@ on:
     branches: [ ubuntu ]
 
 jobs:
-  Run-using-podman:
+  Run-using-podman on Ubuntu:
     runs-on: ubuntu-22.04
     steps:
       - name: Install latest Podman
@@ -36,7 +36,7 @@ jobs:
           systemctl --user daemon-reload
           systemctl --user restart podman.service
 
-      - name: Check Podman Info
+      - name: Get Podman Info
         run: podman info
 
       - name: Checkout
