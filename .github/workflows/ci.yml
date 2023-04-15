@@ -66,5 +66,5 @@ jobs:
           fi
 
           exit $rc
-      - name: Stop CUBE
+      - name: Stop Chris
         run: ./podman/minichris.sh down
