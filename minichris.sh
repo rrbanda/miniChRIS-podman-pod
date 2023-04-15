@@ -1,5 +1,7 @@
 #!/bin/bash
-set -xe 
+# Over-engineered script to run ChRIS using Podman.
+#
+
 # -----------------------------------------------------------------------------
 #
 #                       TERMINAL OUTPUT COLOR HELPERS
@@ -45,7 +47,7 @@ function minichris_chrisomatic () {
   noisy_sh podman run --rm $tty_flags \
     --pod $CUBE_POD \
     --security-opt label=disable \
-    -v "\"$(pwd)/chrisomatic.yml:/chrisomatic.yml:ro\"" \
+    -v "\"$(realpath "$HERE")/chrisomatic.yml:/chrisomatic.yml:ro\"" \
     -v "$SOCK:/var/run/docker.sock:rw" \
     ghcr.io/fnndsc/chrisomatic:0.4.1 chrisomatic "$@"
 }
