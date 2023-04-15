@@ -5,9 +5,6 @@
 
 Run [_ChRIS_](https://chrisproject.org/) using [Podman](https://podman.io).
 
-## Requirements
-* `podman version 4.4.1` and up
-
 ## Abstract
 
 _miniChRIS-podman_ is a fork of [_miniChRIS-docker_](https://github.com/FNNDSC/miniChRIS-docker)
@@ -32,7 +29,7 @@ respositories for information on how to run them in development mode.
 ### System Requirements
 
 - Python 3.8 or above
-- Rootless Podman version 3 or version 4
+- Rootless Podman version 4
 - podman-dnsname (name resolution for containers)
 
 On Arch Linux, please consult the wiki: https://wiki.archlinux.org/title/Podman
