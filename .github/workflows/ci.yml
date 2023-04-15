@@ -4,9 +4,9 @@ name: CI
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ ubuntu ]
   pull_request:
-    branches: [ dev ]
+    branches: [ ubuntu ]
 
 jobs:
   Run-using-podman:
