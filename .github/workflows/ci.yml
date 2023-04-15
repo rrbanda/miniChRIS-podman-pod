@@ -1,18 +1,15 @@
 # Test miniChRIS-k8s with miniChRIS-docker's test suite
 
 name: CI
-
 on:
   push:
     branches: [ dev ]
   pull_request:
     branches: [ dev ]
-
 jobs:
-  Run-using-latest-podman:
+  Run-using-podman:
     runs-on: ubuntu-22.04
     steps:
-        # Pre-installed Podman version is version 3, we need to install version 4.
       - name: Install latest Podman
         run: |
           # https://github.com/containers/podman/blob/main/troubleshooting.md#26-running-containers-with-resource-limits-fails-with-a-permissions-error
@@ -23,7 +20,6 @@ jobs:
             echo '+cpu +io +memory +pids' >> /sys/fs/cgroup/user.slice/user-$(id -u).slice/cgroup.subtree_control
             echo '+cpu +io +memory +pids' >> /sys/fs/cgroup/user.slice/user-$(id -u).slice/user@$(id -u).service/cgroup.subtree_control
           "
-
           # https://podman.io/getting-started/installation#ubuntu
           sudo mkdir -p /etc/apt/keyrings
           curl -fsSL https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/xUbuntu_$(lsb_release -rs)/Release.key \
@@ -39,11 +35,13 @@ jobs:
           systemctl --user daemon-reload
           systemctl --user restart podman.service
 
-      - name: Podman Info
+      - name: Get Podman Info
         run: podman info
+
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Start CUBE
+
+      - name: Start Chris
         run: ./podman/minichris.sh up
 
       - name: Checkout miniChRIS-docker
@@ -51,6 +49,7 @@ jobs:
         with:
           repository: FNNDSC/miniChRIS-docker
           path: ./miniChRIS-docker
+
       - name: Test
         run: |
           set +e
@@ -64,7 +63,6 @@ jobs:
               podman logs $c
             done
           fi
-
           exit $rc
       - name: Pod Health Check Testing Networking
         run: |
