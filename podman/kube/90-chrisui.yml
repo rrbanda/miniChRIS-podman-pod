@@ -1,0 +1,35 @@
+---
+# Chris UI using Podman
+
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: minichris-chrisui
+  labels:
+    app: minichris-chrisui
+    app.kubernetes.io/component: frontend
+    app.kubernetes.io/part-of: miniChRIS
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minichris-chrisui
+  template:
+    metadata:
+      name: minichris-chrisui
+      labels:
+        app: minichris-chrisui
+    spec:
+      containers:
+        - name: chrisui
+          image: ghcr.io/fnndsc/chris_ui:20230418.240-9dca09b4
+          args: ["sirv", "--host", "--single"]
+          ports:
+          - containerPort: 3000
+            hostPort: 8020
+          env:
+            - name: REACT_APP_CHRIS_UI_URL
+              value: http://localhost:8000/api/v1/
+            - name: REACT_APP_PFDCM_URL
+              value: http://localhost:4005/
